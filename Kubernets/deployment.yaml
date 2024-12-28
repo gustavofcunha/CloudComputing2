@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: playlist-recommender
+  labels:
+    app: playlist-recommender
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: playlist-recommender
+  template:
+    metadata:
+      labels:
+        app: playlist-recommender
+    spec:
+      containers:
+        - name: rest-api-server
+          image: gustavofcunha/rest_api_server:v2
+          ports:
+            - containerPort: 9000
+          volumeMounts: 
+            - name: project2-volume
+              mountPath: /app/data
+      volumes:
+        - name: project2-volume
+          persistentVolumeClaim:
+            claimName: project2-pvc-gustavocunha

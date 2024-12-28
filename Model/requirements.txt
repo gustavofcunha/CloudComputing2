@@ -1,0 +1,5 @@
+pandas
+fpgrowth-py
+paramiko
+pickle
+os

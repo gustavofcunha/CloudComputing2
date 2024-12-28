@@ -1,0 +1,13 @@
+#Dockerfile for the recommendation model
+
+FROM python:3.9-slim-bullseye
+
+
+WORKDIR /modelo
+
+COPY recommendation_rules.py /modelo/
+COPY requirements.txt /modelo/
+
+RUN pip3 install -r requirements.txt
+
+CMD ["python", "recommendation_rules.py"]
