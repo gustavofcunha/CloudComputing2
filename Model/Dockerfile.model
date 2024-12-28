@@ -5,8 +5,8 @@ FROM python:3.9-slim-bullseye
 
 WORKDIR /modelo
 
-COPY recommendation_rules.py /modelo/
-COPY requirements.txt /modelo/
+COPY /Model/recommendation_rules.py /modelo/
+COPY /Model/requirements.txt /modelo/
 
 RUN pip3 install -r requirements.txt
 

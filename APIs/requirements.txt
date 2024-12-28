@@ -1,5 +1,1 @@
 flask
-pandas
-requests
-json
-random

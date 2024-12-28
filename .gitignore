@@ -16,3 +16,4 @@
 /.dotnet
 /.w3m
 /myenv
+/APIs/__pycache__

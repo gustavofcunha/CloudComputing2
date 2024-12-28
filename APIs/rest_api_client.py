@@ -4,7 +4,7 @@ import pandas as pd
 import random
 
 API_URL = "http://127.0.0.1:52111/api/recommender"
-CSV_FILE = "/home/datasets/spotify/2023_spotify_songs.csv"  
+CSV_FILE = "https://raw.githubusercontent.com/gustavofcunha/CloudComputing2/main/spotify/2023_spotify_songs.csv"  
 NUM_SONGS = 10
 
 def load_songs_from_csv(csv_file):
