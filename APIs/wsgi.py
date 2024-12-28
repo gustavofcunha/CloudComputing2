@@ -7,7 +7,7 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-RULES_FILE_PATH = "/app/data/model.pkl"
+RULES_FILE_PATH = "/app/data/rules.pkl"
 
 DATASET_PATHS = {
     "initial": "https://raw.githubusercontent.com/gustavofcunha/CloudComputing2/main/spotify/2023_spotify_ds1.csv",
@@ -129,4 +129,4 @@ if __name__ == '__main__':
     else:
         app.model = []
 
-    app.run(host='0.0.0.0', port=9000)
+    app.run(host='0.0.0.0', port=5000)

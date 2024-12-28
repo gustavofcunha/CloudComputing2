@@ -8,7 +8,7 @@ DATASET_PATHS = {
     "songs": "https://raw.githubusercontent.com/gustavofcunha/CloudComputing2/main/spotify/2023_spotify_songs.csv"
 }
 
-RULES_FILE_PATH = "modelo/rules.pkl"
+RULES_FILE_PATH = "/modelo/data/rules.pkl"
 
 def load_and_transform_dataset(file_path):
     """Load and transform dataset into a list of transactions in one step."""

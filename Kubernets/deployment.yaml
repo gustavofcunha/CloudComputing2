@@ -18,7 +18,7 @@ spec:
         - name: rest-api-server
           image: gustavofcunha/rest_api_server:v2
           ports:
-            - containerPort: 9000
+            - containerPort: 5000
           volumeMounts: 
             - name: project2-volume
               mountPath: /app/data
