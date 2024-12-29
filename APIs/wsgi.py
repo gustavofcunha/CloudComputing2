@@ -1,52 +1,53 @@
 from flask import Flask, request, jsonify
 import pickle
+import hashlib
+import os
+import time
 
-# Caminho para o arquivo de regras
-#RULES_FILE_PATH = "/home/gustavocunha/TP-2/rules.pkl"
 RULES_FILE_PATH = "/app/data/rules.pkl"
+last_checksum = None
 
-# Carregar o arquivo de regras e extrair as informações necessárias
-with open(RULES_FILE_PATH, 'rb') as f:
-    model_data = pickle.load(f)
+def get_file_checksum(file_path):
+    with open(file_path, "rb") as f:
+        file_content = f.read()
+        return hashlib.md5(file_content).hexdigest()
 
-rules = model_data["rules"]
-version = model_data["version"]
-model_date = model_data["date"]
+def load_model():
+    with open(RULES_FILE_PATH, 'rb') as f:
+        model_data = pickle.load(f)
+    return model_data["rules"], model_data["version"], model_data["date"]
 
-# Função para gerar recomendações com base nas músicas fornecidas e nas regras carregadas
+rules, version, model_date = load_model()
+last_checksum = get_file_checksum(RULES_FILE_PATH)
+
 def generate_recommendations(user_songs, rules=rules, min_confidence=0.3):
     recommended = set()
-    
-    # Converter user_songs para conjunto
     user_songs_set = set(user_songs)
-    print(f"User songs as set: {user_songs_set}")  # Print para verificar user_songs_set
     
     for rule in rules:
         antecedent, consequent, confidence = rule
-        
-        # Converter antecedente para conjunto
         antecedent_set = set(antecedent)
-        print(f"Checking rule - Antecedent: {antecedent_set}, Consequent: {consequent}, Confidence: {confidence}")  # Print para verificar a regra
         
-        # Garantir que o antecedente seja um subconjunto de user_songs
         if confidence >= min_confidence and antecedent_set.issubset(user_songs_set):
-            print(f"Rule matched. Adding consequent: {consequent}")  # Print quando a regra for atendida
             recommended.update(consequent)
         elif confidence >= min_confidence and user_songs_set.issubset(antecedent_set):
-            print(f"Rule matched in reverse. Adding consequent: {consequent}")  # Print para o caso reverso
             recommended.update(consequent)
     
-    print(f"Recommended songs: {recommended}")  # Print para verificar as músicas recomendadas
     return list(recommended)
-
 
 app = Flask(__name__)
 
-# Endpoint para recomendações de playlists, recebe uma lista de músicas e retorna recomendações
 @app.route("/api/recommender", methods=["POST"])
 def recommend_playlist():
+    global rules, version, model_date, last_checksum
+
     try:
-        # Obter os dados da requisição
+        current_checksum = get_file_checksum(RULES_FILE_PATH)
+
+        if current_checksum != last_checksum:
+            rules, version, model_date = load_model()
+            last_checksum = current_checksum
+
         request_data = request.get_json()
 
         if "songs" not in request_data:
@@ -54,7 +55,6 @@ def recommend_playlist():
 
         user_songs = request_data["songs"]
 
-        # Gerar as recomendações baseadas nas músicas recebidas
         recommendations = generate_recommendations(user_songs)
 
         return jsonify({

@@ -4,29 +4,33 @@ import pandas as pd
 import random
 import subprocess
 
-API_URL = "http://127.0.0.1:52111/api/recommender"
-#API_URL = "http://127.0.0.1:5000/api/recommender"
+API_URL = "http://127.0.0.1:5000/api/recommender"
 
 def send_recommendation_request(songs):
-    # Formatar a lista de músicas como string JSON
     songs_json = json.dumps(songs)
-
-    # Comando curl
     curl_command = [
         "curl", "-s", "-X", "POST", API_URL,
         "-H", "Content-Type: application/json",
         "-d", f'{{"songs": {songs_json}}}'
     ]
 
-    # Executa o comando curl e captura a resposta
-    response = subprocess.run(curl_command, capture_output=True, text=True)
+    try:
+        response = subprocess.run(curl_command, capture_output=True, text=True)
+        if response.returncode != 0:
+            print("error:  unable to connect to api check the endpoint or api status")
+            return
 
-    # Exibe a resposta
-    print("Resposta da API:")
-    print(response.stdout)
+        if response.stdout:
+            print("api response")
+            print(response.stdout)
+        else:
+            print("api responded but the response body is empty")
+
+    except Exception as e:
+        print(f"error:  occurred while communicating with the api {e}")
 
 def test_recommendation_api():
-    print("Iniciando o teste da API de recomendação...\n")
+    print("starting api recommendation test")
     
     selected_songs = [
         "Bad and Boujee (feat. Lil Uzi Vert)", 
@@ -40,8 +44,7 @@ def test_recommendation_api():
         "Deja Vu"
     ]
 
-    print(f"Solicitando recomendação para as músicas: {selected_songs}")
-    
+    print(f"requesting recommendation for songs {selected_songs}")
     send_recommendation_request(selected_songs)
 
 if __name__ == "__main__":
