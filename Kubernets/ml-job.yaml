@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ml-model-job
+spec:
+  template:
+    spec:
+      containers:
+      - name: recommendation-rules
+        image: gustavofcunha/recommendation_rules:v3
+        command: ["/bin/bash", "-c"]
+        args: [
+          "curl -s https://raw.githubusercontent.com/gustavofcunha/CloudComputing2/main/spotify/2023_spotify_ds1.csv -o /modelo/data/2023_spotify_ds1.csv;",
+          "python /modelo/data/recommendation_rules.py"
+        ]
+        volumeMounts:
+        - name: model-data
+          mountPath: /modelo/data
+      volumes:
+      - name: model-data
+        persistentVolumeClaim:
+          claimName: project2-pv2-gustavocunha
+      restartPolicy: Never
+  backoffLimit: 4

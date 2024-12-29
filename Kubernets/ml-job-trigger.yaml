@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: CronWorkflow
+metadata:
+  name: trigger-ml-job
+spec:
+  schedule: "*/5 * * * *"  # Executa a cada 5 minutos (ajuste conforme necessário)
+  workflowSpec:
+    entrypoint: trigger-ml-job
+    templates:
+      - name: trigger-ml-job
+        container:
+          name: recommendation-rules
+          image: gustavofcunha/recommendation_rules:v3
+          volumeMounts:
+            - name: model-data
+              mountPath: /modelo/data
+          command:
+            - /bin/bash
+            - -c
+            - |
+              echo "Checking dataset update...";
+              curl -s https://raw.githubusercontent.com/gustavofcunha/CloudComputing2/main/spotify/2023_spotify_ds1.csv -o /modelo/data/2023_spotify_ds1.csv;
+              # Verifica se houve alteração no dataset
+              if [ "$(md5sum /modelo/data/2023_spotify_ds1.csv | awk '{ print $1 }')" != "$(cat /modelo/data/dataset_checksum)" ]; then
+                echo "Dataset updated, triggering ML job...";
+                kubectl create -f /modelo/data/ml-job.yaml;  # Dispara o Job para treinar o modelo
+                # Atualiza o checksum
+                md5sum /modelo/data/2023_spotify_ds1.csv | awk '{ print $1 }' > /modelo/data/dataset_checksum;
+              else
+                echo "No updates detected in the dataset.";
+              fi
+      volumes:
+        - name: model-data
+          persistentVolumeClaim:
+            claimName: project2-pv2-gustavocunha
