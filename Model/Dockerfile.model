@@ -2,7 +2,7 @@
 
 FROM python:3.9-slim-bullseye
 
-
+RUN apt-get update && apt-get install -y curl
 WORKDIR /modelo
 
 COPY /Model/recommendation_rules.py /modelo/

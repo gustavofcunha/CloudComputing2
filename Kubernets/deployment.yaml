@@ -16,13 +16,13 @@ spec:
     spec:
       initContainers:
       - name: recommendation-rules
-        image: gustavofcunha/recommendation_rules:v3
+        image: gustavofcunha/recommendation_rules:v4
         volumeMounts:
         - name: shared-data
           mountPath: /modelo/data
       containers:
       - name: rest-api-server
-        image: gustavofcunha/rest_api_server:v3
+        image: gustavofcunha/rest_api_server:v4
         ports:
         - containerPort: 5000
         volumeMounts:
