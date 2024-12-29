@@ -6,8 +6,6 @@ import subprocess
 
 API_URL = "http://127.0.0.1:52111/api/recommender"
 #API_URL = "http://127.0.0.1:5000/api/recommender"
-CSV_FILE = "https://raw.githubusercontent.com/gustavofcunha/CloudComputing2/main/spotify/2023_spotify_ds1.csv"  
-
 
 def send_recommendation_request(songs):
     # Formatar a lista de músicas como string JSON

@@ -14,15 +14,21 @@ spec:
       labels:
         app: playlist-recommender
     spec:
+      initContainers:
+      - name: recommendation-rules
+        image: gustavofcunha/recommendation_rules:v3
+        volumeMounts:
+        - name: shared-data
+          mountPath: /modelo/data
       containers:
-        - name: rest-api-server
-          image: gustavofcunha/rest_api_server:v2
-          ports:
-            - containerPort: 5000
-          volumeMounts: 
-            - name: project2-volume
-              mountPath: /app/data
+      - name: rest-api-server
+        image: gustavofcunha/rest_api_server:v3
+        ports:
+        - containerPort: 5000
+        volumeMounts:
+        - name: shared-data
+          mountPath: /app/data
       volumes:
-        - name: project2-volume
-          persistentVolumeClaim:
-            claimName: project2-pvc-gustavocunha
+      - name: shared-data
+        persistentVolumeClaim:
+          claimName: project2-pvc-gustavocunha
