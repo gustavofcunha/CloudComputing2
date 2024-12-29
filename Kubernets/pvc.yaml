@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: project2-pvc
+  name: project2-pv2-gustavocunha
   namespace: gustavocunha
 spec:
   storageClassName: default-storage-class-gustavocunha
@@ -12,5 +12,5 @@ spec:
       storage: 1Gi
   selector:
     matchLabels:
-      type: hostPath
       namespace: gustavocunha
+  volumeName: project2-pv2-gustavocunha
