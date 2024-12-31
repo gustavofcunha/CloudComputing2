@@ -1,0 +1,11 @@
+project: gustavocunha-project
+source:
+  repoURL: https://github.com/gustavofcunha/CloudComputing2
+  path: Kubernets
+  targetRevision: HEAD
+destination:
+  server: https://kubernetes.default.svc
+  namespace: gustavocunha
+syncPolicy:
+  automated:
+    selfHeal: true
